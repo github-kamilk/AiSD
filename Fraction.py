@@ -65,8 +65,3 @@ class Fraction():
 
     def get_dem(self):
         return self.denominator
-
-
-f1 = Fraction(1, 5)
-f2 = Fraction(1, 5)
-print(f1-f2)
