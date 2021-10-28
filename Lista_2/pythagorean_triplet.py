@@ -29,7 +29,7 @@ def version_3(sum):
     k = 2
     for a in range(1, int(sum / 3)):
         k+=3
-        for b in range(a + 1, int(sum / 2)):
+        for b in range(a, int(sum / 2)):
             k += 7
             c = sum - a - b
             if a ** 2 + b ** 2 == c ** 2:
