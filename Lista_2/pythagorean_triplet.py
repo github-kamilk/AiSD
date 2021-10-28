@@ -8,9 +8,8 @@ def version_1(sum):
             for c in range(1, sum):
                 k += 9
                 if a + b + c == sum and a ** 2 + b ** 2 == c ** 2:
-                    print(True, a, b, c, k)
-                    return 0
-    print(False, None, None, None, k)
+                    return (True, a, b, c, k)
+    return (False, None, None, None, k)
 
 
 def version_2(sum):
@@ -21,9 +20,8 @@ def version_2(sum):
             k += 7
             c = sum - a - b
             if a ** 2 + b ** 2 == c ** 2:
-                print(True, a, b, c, k)
-                return 0
-    print(False, None, None, None, k)
+                return (True, a, b, c, k)
+    return (False, None, None, None, k)
 
 def version_3(sum):
     k = 2
@@ -33,9 +31,8 @@ def version_3(sum):
             k += 7
             c = sum - a - b
             if a ** 2 + b ** 2 == c ** 2:
-                print(True, a, b, c, k)
-                return 0
-    print(False, None, None, None, k)
+                return (True, a, b, c, k)
+    return (False, None, None, None, k)
 
 def version_4(sum):
     k = 0
@@ -51,9 +48,8 @@ def version_4(sum):
                 a = sum - b - c
                 k+=3
                 if a>0 and b>0:
-                    print(True, a, b, c, k)
-                    return 0
-    print(False, None, None, None, k)
+                    return (True, a, b, c, k)
+    return (False, None, None, None, k)
 
 def version_5(sum):
     k = 3
@@ -69,12 +65,5 @@ def version_5(sum):
                 a = sum - b - c
                 k+=3
                 if a>0 and b>0:
-                    print(True, a, b, c, k)
-                    return 0
-    print(False, None, None, None, k)
-
-version_1(1000)
-version_2(1000)
-version_3(1000)
-version_4(1000)
-version_5(1000)
+                    return (True, a, b, c, k)
+    return (False, None, None, None, k)
