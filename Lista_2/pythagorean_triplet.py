@@ -13,26 +13,30 @@ def version_1(sum):
 
 
 def version_2(sum):
-    k = 2
-    for a in range(1, int(sum / 3)):
-        k+=2
-        for b in range(1, int(sum / 2)):
+    x = int(sum / 3)
+    y = int(sum / 2)
+    k = 4
+    for a in range(1, x):
+        for b in range(1, y):
             k += 7
             c = sum - a - b
             if a ** 2 + b ** 2 == c ** 2:
                 return (True, a, b, c, k)
     return (False, None, None, None, k)
 
+
 def version_3(sum):
-    k = 2
-    for a in range(1, int(sum / 3)):
-        k+=2
-        for b in range(a, int(sum / 2)):
+    x = int(sum / 3)
+    y = int(sum / 2)
+    k = 4
+    for a in range(1, x):
+        for b in range(a, y):
             k += 7
             c = sum - a - b
             if a ** 2 + b ** 2 == c ** 2:
                 return (True, a, b, c, k)
     return (False, None, None, None, k)
+
 
 def version_4(sum):
     k = 0
@@ -46,10 +50,11 @@ def version_4(sum):
                 k += 5
                 b = (sum - c + a_b) / 2
                 a = sum - b - c
-                k+=3
-                if a>0 and b>0:
+                k += 3
+                if a > 0 and b > 0:
                     return (True, a, b, c, k)
     return (False, None, None, None, k)
+
 
 def version_5(sum):
     k = 3
@@ -63,7 +68,7 @@ def version_5(sum):
                 k += 5
                 b = (sum - c + a_b) / 2
                 a = sum - b - c
-                k+=3
-                if a>0 and b>0:
+                k += 3
+                if a > 0 and b > 0:
                     return (True, a, b, c, k)
     return (False, None, None, None, k)
