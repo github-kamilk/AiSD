@@ -3,6 +3,8 @@ def check_values(n, k, p):
         raise ValueError("n and k should be positive!")
     elif p < 0 or p > 1:
         raise Exception("Probability should be greater than 0 and less than 1!")
+    else:
+        pass
 
 
 def quick_power(p, n, count_mult=0):
