@@ -21,7 +21,7 @@ def smart_polynomial_value_calc(coeff, arg):
     coeff.reverse()
     for i in coeff[:-1]:
         if value == 0:
-            value = (i) * arg
+            value = i * arg
             count_mult += 1
         else:
             value = (value + i) * arg
