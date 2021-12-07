@@ -1,5 +1,4 @@
 class Node:
-
     def __init__(self, init_data):
         self.data = init_data
         self.next = None
@@ -16,9 +15,7 @@ class Node:
     def set_next(self, new_next):
         self.next = new_next
 
-
 class UnorderedList(object):
-
     def __init__(self):
         self.head = None
 
@@ -71,7 +68,7 @@ class UnorderedList(object):
         while current != None:
             li.append(current.get_data())
             current = current.get_next()
-        s = ("elements in the list are [" + ', '.join(['{}'] * len(li)) + "]")
+        s = ("Elements in the list are [" + ', '.join(['{}'] * len(li)) + "]")
         return s.format(*li)
 
     def append(self, item):
@@ -122,10 +119,10 @@ class UnorderedList(object):
         current = self.head
         previous = None
         size = self.size()
-        if size == pos+1:
-            pos = -1
-        elif size == 0:
+        if size == 0:
             raise IndexError
+        elif size == pos+1:
+            pos = -1
         elif size == 1 and (pos == 1 or pos == -1):
             self.head = None
             return current.get_data()
@@ -155,3 +152,15 @@ class UnorderedList(object):
                     previous.set_next(current)
                     return current.get_data()
                 index += 1
+                
+    def peek(self):
+        current = self.head
+        previous = None
+
+        if self.is_empty():
+            raise IndexError("Object is empty")
+
+        while current != None:
+            previous = current
+            current = current.get_next()
+        return previous.get_data()
