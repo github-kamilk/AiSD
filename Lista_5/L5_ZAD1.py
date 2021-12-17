@@ -4,6 +4,7 @@ import random
 import time
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+import math
 
 
 def create_matrix(n):
@@ -24,15 +25,16 @@ def time_checker(n):
     return stop - start
 
 
-def func(x, a, b):
-    return a * x ** 2 + b
+def func(x, a, b, power=2):
+    return a * x ** power + b
+
 
 def plot(x, y):
     plt.plot(x, y, 'ro', label="Dane")
     plt.xlabel("Liczba niewiadomych")
     plt.ylabel("Czas wykonania [s]")
     plt.legend(loc='upper left')
-    plt.title("Wykres zależności czasu od ilości niewiadomych")
+    plt.title("Wykres czasu w zależności od ilości niewiadomych")
     plt.show()
 
 
@@ -41,8 +43,9 @@ def log_plot(x, y):
     plt.xlabel("Liczba niewiadomych")
     plt.ylabel("Czas wykonania [s]")
     plt.legend(loc='upper left')
-    plt.title("Wykres zależności czasu od ilości niewiadomych")
+    plt.title("Wykres czasu w zależności od ilości niewiadomych")
     plt.show()
+
 
 def hypothesis_plot(x, y, popt):
     x2 = np.arange(1, x[-1])
@@ -52,16 +55,39 @@ def hypothesis_plot(x, y, popt):
     plt.xlabel("Liczba niewiadomych")
     plt.ylabel("Czas wykonania [s]")
     plt.legend(loc='upper left')
-    plt.title("Wykres zależności czasu od ilości niewiadomych")
+    plt.title("Wykres czasu w zależności od ilości niewiadomych")
     plt.show()
 
 
+def doubling(x_tab, y_tab):
+    ratio = [None] * len(y_tab)
+    print(y_tab)
+    for i in range(1, len(y_tab)):
+        if y_tab[i - 1] != 0:
+            ratio[i] = y_tab[i] / y_tab[i - 1]
+        else:
+            ratio[i] = 0
+    lratio = [None]
+    for val in ratio:
+        if val:
+            lratio.append(math.log(val, 2))
+        else:
+            lratio.append(None)
+
+    print(len(y_tab), len(lratio))
+    print("{} \t {} \t {} \t {}".format("N", "T", "Ratio", "Log"))
+    for i in range(len(y_tab)):
+        print("{} \t {} \t {} \t {}".format(x_tab[i], y_tab[i], ratio[i], lratio[i]))
+
+
 if __name__ == "__main__":
-    n = [2 ** i for i in range(1, 14)]
+    n = [2 ** i for i in range(1, 12)]
     execution_times = []
     for i in n:
         execution_times.append(time_checker(i))
 
     # log_plot(n, execution_times)
     popt, pcov = curve_fit(func, n, execution_times)
-    hypothesis_plot(n, execution_times,popt)
+    print(popt)
+    doubling(n, execution_times)
+    hypothesis_plot(n, execution_times, popt)
