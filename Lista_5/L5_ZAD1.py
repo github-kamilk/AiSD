@@ -61,7 +61,6 @@ def hypothesis_plot(x, y, popt):
 
 def doubling(x_tab, y_tab):
     ratio = [None] * len(y_tab)
-    print(y_tab)
     for i in range(1, len(y_tab)):
         if y_tab[i - 1] != 0:
             ratio[i] = y_tab[i] / y_tab[i - 1]
@@ -74,18 +73,18 @@ def doubling(x_tab, y_tab):
         else:
             lratio.append(None)
 
-    print(len(y_tab), len(lratio))
     print("{} \t {} \t {} \t {}".format("N", "T", "Ratio", "Log"))
     for i in range(len(y_tab)):
         print("{} \t {} \t {} \t {}".format(x_tab[i], y_tab[i], ratio[i], lratio[i]))
 
 
 if __name__ == "__main__":
-    n = [2 ** i for i in range(1, 12)]
+    n = [2 ** i for i in range(1, 13)]
     execution_times = []
     for i in n:
         execution_times.append(time_checker(i))
 
+    # plot(n, execution_times)
     # log_plot(n, execution_times)
     popt, pcov = curve_fit(func, n, execution_times)
     print(popt)
