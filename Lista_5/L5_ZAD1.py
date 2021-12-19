@@ -79,7 +79,7 @@ def doubling(x_tab, y_tab):
 
 
 if __name__ == "__main__":
-    n = [2 ** i for i in range(1, 13)]
+    n = [2 ** i for i in range(1, 11)]
     execution_times = []
     for i in n:
         execution_times.append(time_checker(i))
