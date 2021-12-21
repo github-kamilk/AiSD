@@ -8,16 +8,10 @@ class Tower_Stack:
     def __str__(self): 
         disks = ''.join('{:<2}'.format(d) for d in self.disks)
         return '{}[ {}]'.format(self.name, disks)
-    def is_empty(self):
-        return self.disks == []
     def push(self, disk):
         self.disks.append(disk)
     def pop(self):
         return self.disks.pop()
-    def peek(self):
-        return self.disks[len(self.disks) - 1]
-    def size(self):
-        return len(self.items)
 
 move = 0
 
