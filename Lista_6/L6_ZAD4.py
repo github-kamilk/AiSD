@@ -17,6 +17,12 @@ class Stack:
     def size(self):
         return len(self.items)
 
+    def __str__(self):
+        out = ""
+        for cur in self.items:
+            out += str(cur) + "."
+        return out
+
 
 class Binary_tree:
     def __init__(self, root_obj):
@@ -50,6 +56,9 @@ class Binary_tree:
         self.key = obj
 
     def get_root_value(self):
+        return self.key
+
+    def __str__(self):
         return self.key
 
 
@@ -101,11 +110,20 @@ def build_tree(parsed_function):
             current_tree.set_root_value(i)
             parent = p_stack.pop()
             current_tree = parent
-        elif i in ['+', '-', '*', '/']:
-            current_tree.set_root_value(i)
-            current_tree.insert_right('')
-            p_stack.push(current_tree)
-            current_tree = current_tree.get_right_child()
+        elif i in ['+', '-', '*', '/'] and True:
+            if current_tree.get_root_value() == '':
+                current_tree.set_root_value(i)
+                current_tree.insert_right('')
+                p_stack.push(current_tree)
+                current_tree = current_tree.get_right_child()
+            else:
+                helper_tree = Binary_tree(i)
+                helper_tree.left_child = current_tree
+                helper_tree.insert_right('')
+                function_tree = helper_tree
+                current_tree = function_tree
+                p_stack.push(current_tree)
+                current_tree = current_tree.get_right_child()
         elif i == ')':
             current_tree = p_stack.pop()
         else:
@@ -113,7 +131,7 @@ def build_tree(parsed_function):
     return function_tree
 
 
-function = '( ( 10 + 5 ) * 3 )'
+function = '( ( 10 + 5 ) * 3+7)'
 p_f = parse_function(function)
 print(p_f)
 fun_tree = build_tree(p_f)
