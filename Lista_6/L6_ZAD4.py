@@ -23,7 +23,7 @@ class Stack:
     def __str__(self):
         out = ""
         for cur in self.items:
-            out += str(cur) + "."
+            out += str(cur) + "|"
         return out
 
 
@@ -65,12 +65,13 @@ class Binary_tree:
         return self.key
 
 
-def preorder(tree):
-    if tree:
-        print(tree.get_root_value())
-        preorder(tree.get_left_child())
-        preorder(tree.get_right_child())
-        return tree.get_root_value()
+# def preorder(tree):
+#     if tree:
+#         #print(tree.get_root_value())
+#         preorder_tree.append(tree.get_root_value())
+#         preorder(tree.get_left_child())
+#         preorder(tree.get_right_child())
+#         return tree.get_root_value()
 
 
 def postorder(tree):
@@ -93,19 +94,28 @@ def postorder_eval(tree):
 
 
 def print_function(tree):
-    val = ''
-    if tree:
-        val = '(' + print_function(tree.get_left_child())
-        val = val + str(tree.get_root_value())
-        val = val + print_function(tree.get_right_child()) + ')'
-    return val
+    result = []
+    if tree == None:
+        return result
+    result.append('(')
+    if tree.key in ['sin', 'cos', 'ln', 'exp']:
+        result.append(tree.key)
+        result.extend(print_function(tree.left_child))
+    else:
+        if tree.left_child != None:
+            result.extend(print_function(tree.left_child))
+        result.append(tree.key)
+        if tree.right_child != None:
+            result.extend(print_function(tree.right_child))
+    result.append(')')
+    return result
 
 
 def parse_function(function):
     function = function.replace(" ", "")
     parsed_function = []
     while function != '':
-        if function[:3] in ['sin', 'cos', 'exp', 'log']:
+        if function[:3] in ['sin', 'cos', 'exp']:
             parsed_function.append(function[:3])
             function = function[3:]
         elif function[:2] == 'ln':
@@ -138,7 +148,7 @@ def build_tree(parsed_function):
             current_tree.insert_left('')
             p_stack.push(current_tree)
             current_tree = current_tree.get_left_child()
-        elif i not in ['+', '-', '*', '/', '^', 'sin', 'cos', 'exp', 'log', ')']:
+        elif i not in ['+', '-', '*', '/', '^', 'sin', 'cos','ln', 'exp', ')']:
             current_tree.set_root_value(i)
             parent = p_stack.pop()
             current_tree = parent
@@ -156,7 +166,7 @@ def build_tree(parsed_function):
                 current_tree = function_tree
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_right_child()
-        elif i in ['sin', 'cos', 'exp', 'log']:
+        elif i in ['sin', 'cos', 'exp', 'ln']:
             if current_tree.get_root_value() == '':
                 current_tree.set_root_value(i)
                 current_tree.insert_left('')
@@ -170,16 +180,41 @@ def build_tree(parsed_function):
             raise ValueError
     return function_tree
 
+def differential_tree(tree):
+    preorder_tree = []
+    def preorder(tree):
+        if tree:
+            preorder_tree.append(tree.get_root_value())
+            preorder(tree.get_left_child())
+            preorder(tree.get_right_child())
+            return tree.get_root_value()
+    preorder(tree)
+    print(preorder_tree)
+    p_stack = Stack()
+    diff_tree = Binary_tree('')
+    p_stack.push(diff_tree)
+    current_tree = diff_tree
 
-# function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
-function = '5*(x^5)'
+    for i in preorder_tree:
+        if i in ['+','-']:
+            if current_tree.get_root_value() == '':
+                current_tree.insert_left('')
+                current_tree.insert_right('')
+        
 
-# function = 'sin(x+2)+3'
-# function = 'sin((x^3)+2)'
-# function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
-p_f = parse_function(function)
-print(p_f)
-fun_tree = build_tree(p_f)
-preorder(fun_tree)
-print(print_function(fun_tree))
-# print(postorder_eval(fun_tree))
+
+
+if __name__ == "__main__":
+    function = 'sin(x)+(2*x)'
+    # function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
+    #function = '5*(x^5)'
+    #function = 'sin(x+2)-3'
+    # function = 'sin((x^3)+2)'
+    # function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
+    p_f = parse_function(function)
+    print(p_f)
+    fun_tree = build_tree(p_f)
+    #preorder(fun_tree)
+    print(''.join(print_function(fun_tree)))
+    differential_tree(fun_tree)
+    # print(postorder_eval(fun_tree))
