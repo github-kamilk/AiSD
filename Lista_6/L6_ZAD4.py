@@ -205,10 +205,30 @@ def build_tree(parsed_function):
 def cut_parsed_list(parsed_list):
     not_end_symbols = ['+', '-', '*', '/', '^', 'sin', 'cos', 'ln', 'exp']
 
-    for i in range(len(parsed_list)):
-        if parsed_list[i] not in not_end_symbols and parsed_list[i + 1] not in not_end_symbols:
-            parsed_list = parsed_list[:i + 2]
-            break
+    if parsed_list[0] in ['cos', 'sin', 'exp', 'ln']:
+        for i in range(len(parsed_list)):
+            if parsed_list[i] not in not_end_symbols and parsed_list[i + 1] not in not_end_symbols:
+                parsed_list = parsed_list[:i + 2]
+                break
+
+    # elif parsed_list[0] in ['+', '-', '*', '^']:
+    #     end_position = 1
+    #     stack = 0
+    #     double_end = 0
+    #     for i in range(1,len(parsed_list)):
+    #         symbol = parsed_list[i]
+    #         if stack == 0 and symbol not in not_end_symbols:
+    #             end_position = i
+    #             break
+    #         elif symbol in not_end_symbols:
+    #             stack += 1
+    #         else:
+    #             double_end += 1
+    #             if double_end == 2:
+    #                 stack -= 1
+    #                 double_end = 1
+    #     parsed_list = parsed_list[:end_position+1]
+    #     #print(parsed_list)
 
     return parsed_list
 
@@ -238,10 +258,21 @@ def build_tree_from_parsed(parsed_list):
         else:
             if current_tree.get_root_value() == '':
                 current_tree.set_root_value(i)
-                current_tree = p_stack.pop()
+                if not p_stack.is_empty():
+                    parent = p_stack.pop()
+                    while parent.get_right_child().get_root_value() != '' and not p_stack.is_empty():
+                        parent = p_stack.pop()
+                current_tree = parent
             else:
+                # print(parsed_list)
+                # print(i)
                 current_tree = current_tree.get_right_child()
                 current_tree.set_root_value(i)
+                if not p_stack.is_empty():
+                    parent = p_stack.pop()
+                    while parent.get_right_child().get_root_value() != '' and not p_stack.is_empty():
+                        parent = p_stack.pop()
+                current_tree = parent
     return function_tree
 
 
@@ -292,7 +323,7 @@ def differential_tree(tree):
             current_tree.set_root_value('cos')
 
             current_tree = p_stack.pop()
-            #print(paste_tree.get_left_child())
+            # print(paste_tree.get_left_child())
             diff = differential_tree(paste_tree.get_left_child())
             current_tree.insert_right_tree(diff)
             parent = p_stack.pop()
@@ -321,16 +352,6 @@ def differential_tree(tree):
                     parent = p_stack.pop()
             current_tree = parent.get_right_child()
             j += len(cut_parsed_list(preorder_tree[j:]))
-        elif i == 'x':
-            # print(type(current_tree.get_left_child()))
-            if current_tree.get_root_value() != '':
-                p_stack.push(current_tree)
-                current_tree = current_tree.get_right_child()
-            current_tree.set_root_value("1")
-            parent = p_stack.pop()
-            current_tree = parent
-            print(current_tree.get_left_child())
-            j += 1
         elif i == '*':
             if current_tree.get_root_value() != '':
                 p_stack.push(current_tree)
@@ -360,11 +381,56 @@ def differential_tree(tree):
             current_tree = parent.get_right_child()
             # print(current_tree.get_left_child())
             j += len(cut_parsed_list(preorder_tree[j:]))
+
+        elif i == '^':
+            if current_tree.get_root_value() != '':
+                p_stack.push(current_tree)
+                current_tree = current_tree.get_right_child()
+            current_tree.set_root_value('*')
+            paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
+            current_tree.insert_right_tree(paste_tree.get_right_child())
+            current_tree.insert_left('*')
+            p_stack.push(current_tree)
+
+            current_tree = current_tree.get_left_child()
+            current_tree.insert_left_tree(differential_tree(paste_tree.get_left_child()))
+            current_tree.insert_right('^')
+            p_stack.push(current_tree)
+
+            current_tree = current_tree.get_right_child()
+            current_tree.insert_left_tree(paste_tree.get_left_child())
+            current_tree.insert_right('-')
+            p_stack.push(current_tree)
+
+            current_tree = current_tree.get_right_child()
+            current_tree.insert_right('1')
+            current_tree.insert_left_tree(paste_tree.get_right_child())
+
+            parent = p_stack.pop()
+            if not p_stack.is_empty():
+                while parent.get_right_child().get_root_value() != '' and not p_stack.is_empty():
+                    parent = p_stack.pop()
+            current_tree = parent.get_right_child()
+            # print(current_tree.get_left_child())
+            j += len(cut_parsed_list(preorder_tree[j:]))
+
+
         elif i.isnumeric():
             if current_tree.get_root_value() != '':
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_right_child()
+            print(i)
             current_tree.set_root_value('0')
+            j += 1
+        elif i == 'x':
+            # print(type(current_tree.get_left_child()))
+            if current_tree.get_root_value() != '':
+                p_stack.push(current_tree)
+                current_tree = current_tree.get_right_child()
+            current_tree.set_root_value("1")
+            parent = p_stack.pop()
+            current_tree = parent
+            #print(current_tree.get_left_child())
             j += 1
         else:
             j += 1
@@ -372,13 +438,15 @@ def differential_tree(tree):
 
 
 if __name__ == "__main__":
-    #function = 'x+5'
-    #function = '(cos(x)+(5*x))'
-    #function = '(sin(x)+(2*x))'
+    #function = '((x^2)+5)^8'
+    function = '(x^3)'
+    #function = '((x*5)*(6*x))'
+    # function = '(cos(x)+(5*x))'
+    # function = '(sin(x)+(2*x))'
     # function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
     # function = '5*(x^5)'
-    function = 'sin(x+5)+3'
-    #function = 'cos(x+(2*x))+3'
+    # function = 'sin(x+5)+3'
+    # function = 'cos(x+(2*x))+3'
     # function = 'sin((x^3)+2)'
     # function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
     p_f = parse_function(function)
