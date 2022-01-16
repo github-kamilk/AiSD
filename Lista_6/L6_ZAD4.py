@@ -312,7 +312,28 @@ def differential_tree(tree):
                 print("Wanted set + or - but taken")
                 j += 1
         elif i == 'ln':
-            pass
+            if current_tree.get_root_value() != '':
+                p_stack.push(current_tree)
+                current_tree = current_tree.get_right_child()
+            current_tree.set_root_value("*")
+            current_tree.insert_left('/')
+            p_stack.push(current_tree)
+            current_tree = current_tree.get_left_child()
+            current_tree.insert_left('1')
+
+            paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
+            current_tree.insert_right_tree(paste_tree.get_left_child())
+            parent = p_stack.pop()
+            current_tree = parent
+
+            diff = differential_tree(paste_tree.get_left_child())
+            current_tree.insert_right_tree(diff)
+            parent = p_stack.pop()
+            if not p_stack.is_empty():
+                while parent.get_right_child().get_root_value() != '' and not p_stack.is_empty():
+                    parent = p_stack.pop()
+            current_tree = parent.get_right_child()
+            j += len(cut_parsed_list(preorder_tree[j:]))
         elif i == 'exp':
             if current_tree.get_root_value() != '':
                 p_stack.push(current_tree)
@@ -469,7 +490,9 @@ def differential_tree(tree):
 
 
 if __name__ == "__main__":
-    function = 'exp(x^2)+(5*x)'
+    #function = 'exp(x^2)+(5*x)'
+    #function = 'ln(x^2)+5'
+    #function = 'ln(x^2)+(5*x)'
     #function = '((x^2)+5)^10'
     #function = '(x^10)'
     #function = '((x*5)*(6*x))'
