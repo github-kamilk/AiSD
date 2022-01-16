@@ -88,7 +88,7 @@ class Binary_tree:
 
 
 def postorder_eval(tree):
-    opers = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/': operator.truediv, '^':operator.pow}
+    opers = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/': operator.truediv, '^': operator.pow}
 
     if tree:
         res1 = postorder_eval(tree.get_left_child())
@@ -409,14 +409,14 @@ def differential_tree(tree):
             left_diff = differential_tree(paste_tree.get_left_child())
             current_tree.insert_left_tree(left_diff)
             current_tree.insert_right_tree(paste_tree.get_right_child())
-            #print(current_tree.get_right_child(),'toooo')
+            # print(current_tree.get_right_child(),'toooo')
 
             current_tree = p_stack.pop()
             current_tree = current_tree.get_right_child()
             current_tree.insert_left_tree(paste_tree.get_left_child())
-            #print(cut_parsed_list(preorder_tree[j:]),'rootval')
+            # print(cut_parsed_list(preorder_tree[j:]),'rootval')
             right_diff = differential_tree(paste_tree.get_right_child())
-            #tu koniec przy pochodnej pomiedzy 5 ^
+            # tu koniec przy pochodnej pomiedzy 5 ^
             current_tree.insert_right_tree(right_diff)
 
             parent = p_stack.pop()
@@ -432,9 +432,9 @@ def differential_tree(tree):
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_right_child()
             current_tree.set_root_value('*')
-            print(preorder_tree,'too')
+            print(preorder_tree, 'too')
             paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
-            print(paste_tree.get_left_child(),'tppppdsdcs')
+            print(paste_tree.get_left_child(), 'tppppdsdcs')
             # print(cut_parsed_list(preorder_tree[j:]),"totot")
             # print(preorder_tree[j:],"totot")
             current_tree.insert_right_tree(paste_tree.get_right_child())
@@ -443,13 +443,13 @@ def differential_tree(tree):
 
             current_tree = current_tree.get_left_child()
             current_tree.insert_left_tree(differential_tree(paste_tree.get_left_child()))
-            #print(current_tree.get_left_child())
+            # print(current_tree.get_left_child())
             current_tree.insert_right('^')
             p_stack.push(current_tree)
 
             current_tree = current_tree.get_right_child()
             current_tree.insert_left_tree(paste_tree.get_left_child())
-            #print(current_tree.get_left_child())
+            # print(current_tree.get_left_child())
             current_tree.insert_right('-')
             p_stack.push(current_tree)
 
@@ -466,6 +466,44 @@ def differential_tree(tree):
             # print(current_tree.get_left_child())
             j += len(cut_parsed_list(preorder_tree[j:]))
 
+        elif i == '/':
+            if current_tree.get_root_value() != '':
+                p_stack.push(current_tree)
+                current_tree = current_tree.get_right_child()
+            current_tree.set_root_value('/')
+            paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
+            print(preorder_tree[j:],'thiss')
+            current_tree.insert_right('^')
+            p_stack.push(current_tree)
+
+            current_tree = current_tree.get_right_child()
+            current_tree.insert_right('2')
+            current_tree.insert_left_tree(paste_tree.get_right_child())
+            parent = p_stack.pop()
+            current_tree = parent
+            current_tree.insert_left('-')
+            p_stack.push(current_tree)
+            current_tree = current_tree.get_left_child()
+            current_tree.insert_left('*')
+            current_tree.insert_right('*')
+            p_stack.push(current_tree)
+
+            current_tree = current_tree.get_left_child()
+            current_tree.insert_left_tree(differential_tree(paste_tree.get_left_child()))
+            current_tree.insert_right_tree(paste_tree.get_right_child())
+
+            parent = p_stack.pop()
+            current_tree = parent
+
+            current_tree = current_tree.get_right_child()
+            current_tree.insert_left_tree(paste_tree.get_left_child())
+            current_tree.insert_right_tree(differential_tree(paste_tree.get_right_child()))
+
+            p_stack.pop()
+            parent=p_stack.pop()
+
+            current_tree = parent
+            j += len(cut_parsed_list(preorder_tree[j:]))
 
         elif i.isnumeric():
             if current_tree.get_root_value() != '':
@@ -490,19 +528,20 @@ def differential_tree(tree):
 
 
 if __name__ == "__main__":
-    #function = 'exp(x^2)+(5*x)'
-    #function = 'ln(x^2)+5'
-    #function = 'ln(x^2)+(5*x)'
-    #function = '((x^2)+5)^10'
-    #function = '(x^10)'
-    #function = '((x*5)*(6*x))'
-    #function = '(cos(x)+(5*x)'
-    #function = '(sin(x)+(2*x))'
-    #function = '(9*(x^3))+5' !!!!!!!!!!!!!!!!!!!!
+    function = '(sin(x))/(exp(x))'
+    # function = 'exp(x^2)+(5*x)'
+    # function = 'ln(x^2)+5'
+    # function = 'ln(x^2)+(5*x)'
+    # function = '((x^2)+5)^10'
+    # function = '(x^10)'
+    # function = '((x*5)*(6*x))'
+    # function = '(cos(x)+(5*x)'
+    # function = '(sin(x)+(2*x))'
+    # function = '(9*(x^3))+5' !!!!!!!!!!!!!!!!!!!!
     # function = '(9*(x^3))+(8*(x^2))'
     # function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
-    #function = 'x^5'
-    #function = '5*(x^5)'
+    # function = 'x^5'
+    # function = '5*(x^5)'
     # function = 'sin(x+5)+3'
     # function = 'cos(x+(2*x))+3'
     # function = 'sin((x^3)+2)'
