@@ -563,9 +563,8 @@ if __name__ == "__main__":
     # function = 'sin((x^3)+2)'
     p_f = parse_function(function)
     fun_tree = build_tree(p_f)
-    print('Expresion: ' + ''.join(print_function(fun_tree)))
+    print('F(x)= ' + ''.join(unpack_list(print_function(fun_tree))))
     diff_tree = differential_tree(fun_tree)
     output = remove_blank_space(print_function(diff_tree))
 
-    print('Derivative: ' + ''.join(output))
-    print('Derivative: ' + ''.join(unpack_list(output)))
+    print("F'(x)= " + ''.join(unpack_list(output)))
