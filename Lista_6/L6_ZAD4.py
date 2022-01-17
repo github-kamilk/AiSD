@@ -230,9 +230,9 @@ def cut_parsed_list(parsed_list):
                     stack -= 1
                     double_end = 1
         parsed_list = parsed_list[:end_position + 1]
-        print(parsed_list)
+        # print(parsed_list)
         return parsed_list
-    print(parsed_list)
+    # print(parsed_list)
     return parsed_list
 
 
@@ -290,16 +290,11 @@ def build_tree_from_parsed(parsed_list):
             # elif current_tree.get_root_value() in ['sin', 'cos','ln','exp']:
             #     pass
             else:
-                # print(parsed_list)
-                #print(i,'thiaa')
-                #print(current_tree.get_root_value(),'thiaa')
-                #print(current_tree.get_right_child(),'thiaa')
                 current_tree = current_tree.get_right_child()
                 current_tree.set_root_value(i)
                 if not p_stack.is_empty():
                     parent = p_stack.pop()
                     while not p_stack.is_empty():
-                        #print(parent.get_right_child(), 'check')
                         if parent.get_root_value() in ['sin', 'cos', 'exp', 'ln']:
                             parent = p_stack.pop()
                         elif parent.get_right_child().get_root_value() == '':
@@ -322,8 +317,6 @@ def differential_tree(tree):
             return tree.get_root_value()
 
     preorder(tree)
-    # preorder_tree = list(filter(lambda a: a != '', preorder_tree))
-    print(preorder_tree)
     p_stack = Stack()
     diff_tree = Binary_tree('')
     p_stack.push(diff_tree)
@@ -343,7 +336,7 @@ def differential_tree(tree):
                 current_tree = current_tree.get_left_child()
                 j += 1
             else:
-                print("Wanted set + or - but taken")
+                # print("Wanted set + or - but taken")
                 j += 1
         elif i == 'ln':
             if current_tree.get_root_value() != '':
@@ -440,7 +433,6 @@ def differential_tree(tree):
 
             current_tree = current_tree.get_left_child()
             paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
-            print(cut_parsed_list(preorder_tree[j:]),'paste')
             left_diff = differential_tree(paste_tree.get_left_child())
             current_tree.insert_left_tree(left_diff)
             current_tree.insert_right_tree(paste_tree.get_right_child())
@@ -449,9 +441,7 @@ def differential_tree(tree):
             current_tree = p_stack.pop()
             current_tree = current_tree.get_right_child()
             current_tree.insert_left_tree(paste_tree.get_left_child())
-            # print(cut_parsed_list(preorder_tree[j:]),'rootval')
             right_diff = differential_tree(paste_tree.get_right_child())
-            # tu koniec przy pochodnej pomiedzy 5 ^
             current_tree.insert_right_tree(right_diff)
 
             parent = p_stack.pop()
@@ -467,11 +457,7 @@ def differential_tree(tree):
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_right_child()
             current_tree.set_root_value('*')
-            #print(preorder_tree, 'too')
             paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
-            #print(paste_tree.get_left_child(), 'tppppdsdcs')
-            # print(cut_parsed_list(preorder_tree[j:]),"totot")
-            # print(preorder_tree[j:],"totot")
             current_tree.insert_right_tree(paste_tree.get_right_child())
             current_tree.insert_left('*')
             p_stack.push(current_tree)
@@ -507,7 +493,6 @@ def differential_tree(tree):
                 current_tree = current_tree.get_right_child()
             current_tree.set_root_value('/')
             paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
-            #print(paste_tree.get_left_child().get_right_child(), 'thiss')
             current_tree.insert_right('^')
             p_stack.push(current_tree)
 
@@ -579,16 +564,11 @@ if __name__ == "__main__":
     #function = 'x^5'
     #function = '5*(x^5)'
     # function = 'sin(x+5)+3'
-    function = 'cos(x+(2*x))+3'
+    function = '(cos(x+(2*x))+3)'
     #function = 'sin((x^3)+2)'
     p_f = parse_function(function)
     print(p_f)
     fun_tree = build_tree(p_f)
-    # preorder(fun_tree)
     print(''.join(print_function(fun_tree)))
     diff_tree = differential_tree(fun_tree)
     print(''.join(remove_blank_space(print_function(diff_tree))))
-    # print(print_function(build_tree_from_parsed(['sin', '', 'x'])))
-    # print(print_function(build_tree(['sin','(','x','+','5',')'])))
-
-    # print(postorder_eval(fun_tree))
