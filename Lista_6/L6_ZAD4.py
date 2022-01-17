@@ -208,7 +208,8 @@ def cut_parsed_list(parsed_list):
 
     if parsed_list[0] in ['cos', 'sin', 'exp', 'ln']:
         for i in range(len(parsed_list)):
-            if parsed_list[i] not in not_end_symbols and parsed_list[i + 1] not in not_end_symbols:
+            if i + 1 < len(parsed_list) and parsed_list[i] not in not_end_symbols and parsed_list[
+                i + 1] not in not_end_symbols:
                 parsed_list = parsed_list[:i + 2]
                 return parsed_list
 
@@ -218,7 +219,7 @@ def cut_parsed_list(parsed_list):
         double_end = 0
         for i in range(1, len(parsed_list)):
             symbol = parsed_list[i]
-            if stack == 0 and symbol not in not_end_symbols and double_end != 0:
+            if stack < 1 and symbol not in not_end_symbols and double_end != 0:
                 end_position = i
                 break
             elif symbol in not_end_symbols:
@@ -228,7 +229,7 @@ def cut_parsed_list(parsed_list):
                 if double_end == 2:
                     stack -= 1
                     double_end = 1
-        parsed_list = parsed_list[:end_position + 2]
+        parsed_list = parsed_list[:end_position + 1]
         print(parsed_list)
         return parsed_list
     print(parsed_list)
@@ -240,8 +241,10 @@ def build_tree_from_parsed(parsed_list):
     function_tree = Binary_tree('')
     p_stack.push(function_tree)
     current_tree = function_tree
-    for i in parsed_list:
-        if i in ['+', '-', '*', '/', '^', 'sin', 'cos', 'ln', 'exp']:
+    j = 0
+    while j < len(parsed_list):
+        i = parsed_list[j]
+        if i in ['+', '-', '*', '/', '^']:
             if current_tree.get_root_value() == '':
                 current_tree.set_root_value(i)
                 current_tree.insert_left('')
@@ -253,6 +256,18 @@ def build_tree_from_parsed(parsed_list):
                 current_tree.set_root_value(i)
                 current_tree.insert_left('')
                 current_tree.insert_right('')
+                p_stack.push(current_tree)
+                current_tree = current_tree.get_left_child()
+        elif i in ['sin', 'cos', 'ln', 'exp']:
+            if current_tree.get_root_value() == '':
+                current_tree.set_root_value(i)
+                current_tree.insert_left('')
+                p_stack.push(current_tree)
+                current_tree = current_tree.get_left_child()
+            else:
+                current_tree = current_tree.get_right_child()
+                current_tree.set_root_value(i)
+                current_tree.insert_left('')
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_left_child()
         elif i == '':
@@ -262,19 +277,37 @@ def build_tree_from_parsed(parsed_list):
                 current_tree.set_root_value(i)
                 if not p_stack.is_empty():
                     parent = p_stack.pop()
-                    while parent.get_right_child().get_root_value() != '' and not p_stack.is_empty():
-                        parent = p_stack.pop()
-                current_tree = parent
+                    while not p_stack.is_empty():
+                        #print(parent.get_right_child(), 'check')
+                        if parent.get_root_value() in ['sin', 'cos', 'exp', 'ln']:
+                            parent = p_stack.pop()
+                        elif parent.get_right_child().get_root_value() == '':
+                            break
+                        else:
+                            parent = p_stack.pop()
+                    current_tree = parent
+                #print(current_tree.get_root_value(),'rootval')
+            # elif current_tree.get_root_value() in ['sin', 'cos','ln','exp']:
+            #     pass
             else:
                 # print(parsed_list)
-                # print(i)
+                #print(i,'thiaa')
+                #print(current_tree.get_root_value(),'thiaa')
+                #print(current_tree.get_right_child(),'thiaa')
                 current_tree = current_tree.get_right_child()
                 current_tree.set_root_value(i)
                 if not p_stack.is_empty():
                     parent = p_stack.pop()
-                    while parent.get_right_child().get_root_value() != '' and not p_stack.is_empty():
-                        parent = p_stack.pop()
-                current_tree = parent
+                    while not p_stack.is_empty():
+                        #print(parent.get_right_child(), 'check')
+                        if parent.get_root_value() in ['sin', 'cos', 'exp', 'ln']:
+                            parent = p_stack.pop()
+                        elif parent.get_right_child().get_root_value() == '':
+                            break
+                        else:
+                            parent = p_stack.pop()
+                    current_tree = parent
+        j += 1
     return function_tree
 
 
@@ -289,6 +322,7 @@ def differential_tree(tree):
             return tree.get_root_value()
 
     preorder(tree)
+    # preorder_tree = list(filter(lambda a: a != '', preorder_tree))
     print(preorder_tree)
     p_stack = Stack()
     diff_tree = Binary_tree('')
@@ -406,6 +440,7 @@ def differential_tree(tree):
 
             current_tree = current_tree.get_left_child()
             paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
+            print(cut_parsed_list(preorder_tree[j:]),'paste')
             left_diff = differential_tree(paste_tree.get_left_child())
             current_tree.insert_left_tree(left_diff)
             current_tree.insert_right_tree(paste_tree.get_right_child())
@@ -432,9 +467,9 @@ def differential_tree(tree):
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_right_child()
             current_tree.set_root_value('*')
-            print(preorder_tree, 'too')
+            #print(preorder_tree, 'too')
             paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
-            print(paste_tree.get_left_child(), 'tppppdsdcs')
+            #print(paste_tree.get_left_child(), 'tppppdsdcs')
             # print(cut_parsed_list(preorder_tree[j:]),"totot")
             # print(preorder_tree[j:],"totot")
             current_tree.insert_right_tree(paste_tree.get_right_child())
@@ -472,7 +507,7 @@ def differential_tree(tree):
                 current_tree = current_tree.get_right_child()
             current_tree.set_root_value('/')
             paste_tree = build_tree_from_parsed(cut_parsed_list(preorder_tree[j:]))
-            print(preorder_tree[j:],'thiss')
+            #print(paste_tree.get_left_child().get_right_child(), 'thiss')
             current_tree.insert_right('^')
             p_stack.push(current_tree)
 
@@ -500,7 +535,7 @@ def differential_tree(tree):
             current_tree.insert_right_tree(differential_tree(paste_tree.get_right_child()))
 
             p_stack.pop()
-            parent=p_stack.pop()
+            parent = p_stack.pop()
 
             current_tree = parent
             j += len(cut_parsed_list(preorder_tree[j:]))
@@ -509,14 +544,14 @@ def differential_tree(tree):
             if current_tree.get_root_value() != '':
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_right_child()
-            print(i)
+            #print(i)
             current_tree.set_root_value('0')
             j += 1
         elif i == 'x':
-            # print(type(current_tree.get_left_child()))
             if current_tree.get_root_value() != '':
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_right_child()
+            # print(current_tree.get_root_value())
             current_tree.set_root_value("1")
             parent = p_stack.pop()
             current_tree = parent
@@ -528,23 +563,24 @@ def differential_tree(tree):
 
 
 if __name__ == "__main__":
-    function = '(sin(x))/(exp(x))'
-    # function = 'exp(x^2)+(5*x)'
-    # function = 'ln(x^2)+5'
-    # function = 'ln(x^2)+(5*x)'
-    # function = '((x^2)+5)^10'
-    # function = '(x^10)'
-    # function = '((x*5)*(6*x))'
-    # function = '(cos(x)+(5*x)'
-    # function = '(sin(x)+(2*x))'
-    # function = '(9*(x^3))+5' !!!!!!!!!!!!!!!!!!!!
-    # function = '(9*(x^3))+(8*(x^2))'
-    # function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
-    # function = 'x^5'
-    # function = '5*(x^5)'
+    #function = '(sin(x))/(exp(x))'
+    #function = 'exp(x^2)'
+    #function = 'exp(x^2)+(5*x)'
+    #function = 'ln(x^2)+5'
+    #function = 'ln(x^2)+(5*x)'
+    #function = '((x^2)+5)^10'
+    #function = '(x^10)'
+    #function = '((x*5)*(6*x))'
+    #function = '(cos(x)+(5*x)'
+    #function = '(sin(x)+(2*x))'
+    #function = '(9*(x^3))+(5*x)'
+    #function = '((9*(x^3))+(8*(x^2)))'
+    #function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
+    #function = 'x^5'
+    #function = '5*(x^5)'
     # function = 'sin(x+5)+3'
-    # function = 'cos(x+(2*x))+3'
-    # function = 'sin((x^3)+2)'
+    function = 'cos(x+(2*x))+3'
+    #function = 'sin((x^3)+2)'
     p_f = parse_function(function)
     print(p_f)
     fun_tree = build_tree(p_f)
