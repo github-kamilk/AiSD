@@ -20,12 +20,6 @@ class Stack:
     def size(self):
         return len(self.items)
 
-    # def __str__(self):
-    #     out = ""
-    #     for cur in self.items:
-    #         out += str(cur) + "|"
-    #     return out
-
 
 class Binary_tree:
     def __init__(self, root_obj):
@@ -71,22 +65,6 @@ class Binary_tree:
         return self.key
 
 
-# def preorder(tree):
-#     if tree:
-#         #print(tree.get_root_value())
-#         preorder_tree.append(tree.get_root_value())
-#         preorder(tree.get_left_child())
-#         preorder(tree.get_right_child())
-#         return tree.get_root_value()
-
-#
-# def postorder(tree):
-#     if tree:
-#         postorder(tree.get_left_child())
-#         postorder(tree.get_right_child())
-#         print(tree.get_root_value())
-
-
 def postorder_eval(tree):
     opers = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/': operator.truediv, '^': operator.pow}
 
@@ -103,7 +81,8 @@ def remove_blank_space(list):
     leng = len(list)
     i = 0
     while i < leng:
-        if list[i] in ['+', '-', '*', '/'] and list[i + 1] == '(' and list[i + 2] == '' and list[i + 3] == ')':
+        if i + 3 < leng and list[i] in ['+', '-', '*', '/'] and list[i + 1] == '(' and list[i + 2] == '' and list[
+            i + 3] == ')':
             list.pop(i)
             list.pop(i)
             list.pop(i)
@@ -112,6 +91,22 @@ def remove_blank_space(list):
         else:
             i += 1
     return list
+
+
+def unpack_list(tree_list):
+    not_end_symbols = ['+', '-', '*', '/', '^', 'sin', 'cos', 'ln', 'exp']
+    leng = len(tree_list)
+    i = 0
+    while i < leng:
+        symbol = tree_list[i]
+        if i + 1 < leng and i - 1 >= 0 and symbol == '(' and tree_list[i + 1] not in not_end_symbols and tree_list[
+            i + 2] == ')':
+            tree_list.pop(i)
+            tree_list.pop(i + 1)
+            leng -= 2
+        else:
+            i += 1
+    return tree_list
 
 
 def print_function(tree):
@@ -278,7 +273,7 @@ def build_tree_from_parsed(parsed_list):
                 if not p_stack.is_empty():
                     parent = p_stack.pop()
                     while not p_stack.is_empty():
-                        #print(parent.get_right_child(), 'check')
+                        # print(parent.get_right_child(), 'check')
                         if parent.get_root_value() in ['sin', 'cos', 'exp', 'ln']:
                             parent = p_stack.pop()
                         elif parent.get_right_child().get_root_value() == '':
@@ -286,7 +281,7 @@ def build_tree_from_parsed(parsed_list):
                         else:
                             parent = p_stack.pop()
                     current_tree = parent
-                #print(current_tree.get_root_value(),'rootval')
+                # print(current_tree.get_root_value(),'rootval')
             # elif current_tree.get_root_value() in ['sin', 'cos','ln','exp']:
             #     pass
             else:
@@ -529,7 +524,7 @@ def differential_tree(tree):
             if current_tree.get_root_value() != '':
                 p_stack.push(current_tree)
                 current_tree = current_tree.get_right_child()
-            #print(i)
+            # print(i)
             current_tree.set_root_value('0')
             j += 1
         elif i == 'x':
@@ -548,27 +543,29 @@ def differential_tree(tree):
 
 
 if __name__ == "__main__":
-    #function = '(sin(x))/(exp(x))'
-    #function = 'exp(x^2)'
-    #function = 'exp(x^2)+(5*x)'
-    #function = 'ln(x^2)+5'
-    #function = 'ln(x^2)+(5*x)'
-    #function = '((x^2)+5)^10'
-    #function = '(x^10)'
-    #function = '((x*5)*(6*x))'
-    #function = '(cos(x)+(5*x)'
-    #function = '(sin(x)+(2*x))'
-    #function = '(9*(x^3))+(5*x)'
-    #function = '((9*(x^3))+(8*(x^2)))'
-    #function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
-    #function = 'x^5'
-    #function = '5*(x^5)'
+    # function = '(sin(x))/(exp(x))'
+    # function = 'exp(x^2)'
+    function = 'exp(x^2)+(5*x)'
+    # function = 'ln(x^2)+5'
+    # function = 'ln(x^2)+(5*x)'
+    # function = '((x^2)+5)^10'
+    # function = '(x^10)'
+    # function = '((x*5)*(6*x))'
+    # function = '(cos(x)+(5*x)'
+    # function = '(sin(x)+(2*x))'
+    # function = '(9*(x^3))+(5*x)'
+    # function = '((9*(x^3))+(8*(x^2)))'
+    # function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
+    # function = 'x^5'
+    # function = '5*(x^5)'
     # function = 'sin(x+5)+3'
-    function = '(cos(x+(2*x))+3)'
-    #function = 'sin((x^3)+2)'
+    # function = '(cos(x+(2*x))+3)'
+    # function = 'sin((x^3)+2)'
     p_f = parse_function(function)
-    print(p_f)
     fun_tree = build_tree(p_f)
-    print(''.join(print_function(fun_tree)))
+    print('Expresion: ' + ''.join(print_function(fun_tree)))
     diff_tree = differential_tree(fun_tree)
-    print(''.join(remove_blank_space(print_function(diff_tree))))
+    output = remove_blank_space(print_function(diff_tree))
+
+    print('Derivative: ' + ''.join(output))
+    print('Derivative: ' + ''.join(unpack_list(output)))
