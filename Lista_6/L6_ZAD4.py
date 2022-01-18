@@ -1,6 +1,3 @@
-import operator
-
-
 class Stack:
     def __init__(self):
         self.items = []
@@ -534,6 +531,12 @@ def differential_tree(tree, symbol):
             j += 1
     return diff_tree
 
+def calculate_derivative(function):
+    fun_tree = build_tree(parse_function(function))
+    print(f'F({function[1]})= ' + ''.join(unpack_list(print_function(fun_tree))))
+    diff_tree = differential_tree(fun_tree, function[1])
+    output = remove_blank_space(print_function(diff_tree))
+    print(f"F'({function[1]})= " + ''.join(unpack_list(output)))
 
 if __name__ == "__main__":
     # function = '(sin(x))/(exp(x))'
@@ -554,10 +557,12 @@ if __name__ == "__main__":
     # function = 'sin(x+5)+3'
     # function = '(cos(x+(2*x))+3)'
     # function = 'sin((x^3)+2)'
-    p_f = parse_function(function)
-    fun_tree = build_tree(p_f)
-    print(f'F({function[1]})= ' + ''.join(unpack_list(print_function(fun_tree))))
-    diff_tree = differential_tree(fun_tree, function[1])
-    output = remove_blank_space(print_function(diff_tree))
 
-    print(f"F'({function[1]})= " + ''.join(unpack_list(output)))
+    # p_f = parse_function(function)
+    # fun_tree = build_tree(p_f)
+    # print(f'F({function[1]})= ' + ''.join(unpack_list(print_function(fun_tree))))
+    # diff_tree = differential_tree(fun_tree, function[1])
+    # output = remove_blank_space(print_function(diff_tree))
+    #
+    # print(f"F'({function[1]})= " + ''.join(unpack_list(output)))
+    calculate_derivative(function)
