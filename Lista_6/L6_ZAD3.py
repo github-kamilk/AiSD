@@ -13,13 +13,14 @@ class BinHeap:
             index = index // 2      
         
     def insert(self,value):
-        if self.current_size == self.max_size:
+        if not isinstance(value, int):
+            raise TypeError('Value should be an integer')
+        if self.current_size >= self.max_size: 
             if value > self.find_min():
-                self.heap_list.append(value)
                 self.del_min()
-                self.current_size += 1
+                self.insert(value)
             else:
-                raise ValueError("The value is too small to put on the Binary Heap")
+                pass
         else: 
             self.heap_list.append(value)
             self.current_size += 1
@@ -55,19 +56,19 @@ class BinHeap:
         return retval           
     
     def build_heap(self,alist):
+        if not isinstance(alist, list):
+            raise TypeError('Value should be a list')
         index = len(alist) // 2
-        try:
-            if len(alist) > self.max_size:
-                raise IndexError
-            else:
-                self.current_size = len(alist)
-                self.heap_list = [0] + alist[:]
-                while (index > 0):
-                    self.perc_down(index)
-                    index = index - 1    
-        except IndexError:
-            return("It is impossible to have more than " + str(self.max_size) + (" elements"))
-            
+        if len(alist) > self.max_size:
+            for i in range(0, len(alist)):
+                self.insert(alist[i])  
+        else:
+            self.current_size = len(alist)
+            self.heap_list = [0] + alist[:]
+            while (index > 0):
+                self.perc_down(index)
+                index = index - 1
+        
     def size(self):
         return self.current_size
      
