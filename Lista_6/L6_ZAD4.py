@@ -333,7 +333,7 @@ def differential_tree(tree, symbol):
             parent = p_stack.pop()
             current_tree = parent
 
-            diff = differential_tree(paste_tree.get_left_child())
+            diff = differential_tree(paste_tree.get_left_child(), symbol)
             current_tree.insert_right_tree(diff)
             parent = p_stack.pop()
             if not p_stack.is_empty():
@@ -373,7 +373,7 @@ def differential_tree(tree, symbol):
 
             current_tree = p_stack.pop()
             # print(paste_tree.get_left_child())
-            diff = differential_tree(paste_tree.get_left_child())
+            diff = differential_tree(paste_tree.get_left_child(), symbol)
             current_tree.insert_right_tree(diff)
             parent = p_stack.pop()
             if not p_stack.is_empty():
@@ -393,7 +393,7 @@ def differential_tree(tree, symbol):
             current_tree.get_left_child().insert_right_tree(paste_tree)
             current_tree.get_left_child().get_right_child().set_root_value('sin')
 
-            diff = differential_tree(paste_tree.get_left_child())
+            diff = differential_tree(paste_tree.get_left_child(), symbol)
             current_tree.insert_right_tree(diff)
             parent = p_stack.pop()
             if not p_stack.is_empty():
@@ -489,7 +489,7 @@ def differential_tree(tree, symbol):
             p_stack.push(current_tree)
 
             current_tree = current_tree.get_left_child()
-            current_tree.insert_left_tree(differential_tree(paste_tree.get_left_child()))
+            current_tree.insert_left_tree(differential_tree(paste_tree.get_left_child(), symbol))
             current_tree.insert_right_tree(paste_tree.get_right_child())
 
             parent = p_stack.pop()
@@ -497,7 +497,7 @@ def differential_tree(tree, symbol):
 
             current_tree = current_tree.get_right_child()
             current_tree.insert_left_tree(paste_tree.get_left_child())
-            current_tree.insert_right_tree(differential_tree(paste_tree.get_right_child()))
+            current_tree.insert_right_tree(differential_tree(paste_tree.get_right_child(), symbol))
 
             p_stack.pop()
             parent = p_stack.pop()
@@ -539,30 +539,5 @@ def calculate_derivative(function):
     print(f"F'({function[1]})= " + ''.join(unpack_list(output)))
 
 if __name__ == "__main__":
-    # function = '(sin(x))/(exp(x))'
-    # function = 'exp(x^2)'
-    function = 'exp(y^2)+(5*y)', 'y'
-    # function = 'ln(x^2)+5'
-    # function = 'ln(x^2)+(5*x)'
-    # function = '((x^2)+5)^10'
-    # function = '(x^10)'
-    #function = '((x*5)*(6*x))', 'x'
-    # function = '(cos(x)+(5*x)'
-    # function = '(sin(x)+(2*x))'
-    # function = '(9*(x^3))+(5*x)'
-    # function = '((9*(x^3))+(8*(x^2)))'
-    # function = '(9*(x^3))+(8*(x^2))+(7*(2*x))+(6*x)'
-    # function = 'x^5'
-    # function = '5*(x^5)'
-    # function = 'sin(x+5)+3'
-    # function = '(cos(x+(2*x))+3)'
-    # function = 'sin((x^3)+2)'
-
-    # p_f = parse_function(function)
-    # fun_tree = build_tree(p_f)
-    # print(f'F({function[1]})= ' + ''.join(unpack_list(print_function(fun_tree))))
-    # diff_tree = differential_tree(fun_tree, function[1])
-    # output = remove_blank_space(print_function(diff_tree))
-    #
-    # print(f"F'({function[1]})= " + ''.join(unpack_list(output)))
+    function = '(sin(x))/(exp(x))', 'x'
     calculate_derivative(function)
