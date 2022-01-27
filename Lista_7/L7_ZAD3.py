@@ -112,6 +112,21 @@ class Graph:
     def __iter__(self):
         return iter(self.vert_list.values())
 
+    def bfs(self, start):
+        start.set_distance(0)  # distance 0 indicates it is a start node
+        start.set_pred(None)  # no predecessor at start
+        vert_queue = Queue()
+        vert_queue.enqueue(start)  # add start to processing queue
+        while (vert_queue.size() > 0):
+            current_vert = vert_queue.dequeue()  # pop next node to process -> current node
+            for nbr in current_vert.get_connections():  # check all neighbors of the current node
+                if (nbr.get_color() == 'white'):  # if the neighbor is white
+                    nbr.set_color('gray')  # change its color to grey
+                    nbr.set_distance(current_vert.get_distance() + 1)  # set its distance
+                    nbr.set_pred(current_vert)  # current node is its predecessor
+                    vert_queue.enqueue(nbr)  # add it to the queue
+            current_vert.set_color('black')  # change current node to black after vi
+
 
 class DFSGraph(Graph):
     def __init__(self):
@@ -137,22 +152,6 @@ class DFSGraph(Graph):
         start_vertex.set_color('black')
         self.time += 1
         start_vertex.set_finish(self.time)
-
-
-def bfs(start):
-    start.set_distance(0)  # distance 0 indicates it is a start node
-    start.set_pred(None)  # no predecessor at start
-    vert_queue = Queue()
-    vert_queue.enqueue(start)  # add start to processing queue
-    while (vert_queue.size() > 0):
-        current_vert = vert_queue.dequeue()  # pop next node to process -> current node
-        for nbr in current_vert.get_connections():  # check all neighbors of the current node
-            if (nbr.get_color() == 'white'):  # if the neighbor is white
-                nbr.set_color('gray')  # change its color to grey
-                nbr.set_distance(current_vert.get_distance() + 1)  # set its distance
-                nbr.set_pred(current_vert)  # current node is its predecessor
-                vert_queue.enqueue(nbr)  # add it to the queue
-        current_vert.set_color('black')  # change current node to black after vi
 
 
 if __name__ == "__main__":
