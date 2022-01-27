@@ -46,6 +46,14 @@ class Graph:
             self.add_vertex(t)
         self.vert_list[f].add_neighbor(self.vert_list[t], cost)
 
+    def get_edges(self):
+        edges = []
+        for v in self:
+            for w in v.get_connections():
+                edges.append((v.get_id(), w.get_id()))
+        return edges
+
+
     def get_vertices(self):
         return self.vert_list.keys()
 
@@ -68,6 +76,4 @@ if __name__ == "__main__":
     g.add_edge(5, 4, 8)
     g.add_edge(5, 2, 1)
 
-    for v in g:
-        for w in v.get_connections():
-            print("( %s , %s )" % (v.get_id(), w.get_id()))
+    print(g.get_edges())

@@ -100,6 +100,13 @@ class Graph:
             self.add_vertex(t)
         self.vert_list[f].add_neighbor(self.vert_list[t], cost)
 
+    def get_edges(self):
+        edges = []
+        for v in self:
+            for w in v.get_connections():
+                edges.append((v.get_id(), w.get_id()))
+        return edges
+
     def get_vertices(self):
         return self.vert_list.keys()
 
