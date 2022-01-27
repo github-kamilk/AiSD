@@ -138,7 +138,7 @@ class Graph:
             if aVertex.get_color() == 'white':
                 self.dfsvisit(aVertex)
 
-        possible = True
+        is_linear = True
         times = [(i, self.vert_list[i].get_finish()) for i in self.vert_list.keys()]
         times.sort(reverse=True, key=lambda x: x[1])
         result = []
@@ -148,9 +148,9 @@ class Graph:
         for i in range(1, len(result)):
             for j in result[:i]:
                 if j in [p.id for p in list(self.vert_list[result[i]].connected_to)]:
-                    possible = False
+                    is_linear = False
 
-        if possible:
+        if is_linear:
             return result
         else:
             raise ValueError('Graph is not linear!')
