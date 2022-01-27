@@ -21,11 +21,11 @@ class Vertex:
     def __init__(self, key):
         self.id = key
         self.connected_to = {}
-        self.color = 'white'  # new: color of node
-        self.dist = sys.maxsize  # new: distance from beginning (will be used later)
-        self.pred = None  # new: predecessor
-        self.disc = 0  # new: discovery time
-        self.fin = 0  # new: end-of-processing time
+        self.color = 'white'
+        self.dist = sys.maxsize
+        self.pred = None
+        self.disc = 0
+        self.fin = 0
 
     def add_neighbor(self, nbr, weight=0):
         self.connected_to[nbr] = weight
