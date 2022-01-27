@@ -16,7 +16,6 @@ class Queue:
     def size(self):
         return len(self.items)
 
-
 class Vertex:
     def __init__(self, key):
         self.id = key
