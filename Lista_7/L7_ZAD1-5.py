@@ -281,24 +281,6 @@ class Graph:
             if aVertex.get_color() == 'white':
                 self.dfsvisit(aVertex)
 
-    def sort_topological(self):
-        is_linear = True
-        times = [(i, self.vert_list[i].get_finish()) for i in self.vert_list.keys()]
-        times.sort(reverse=True, key=lambda x: x[1])
-        result = []
-        for i in times:
-            result.append(i[0])
-
-        for i in range(1, len(result)):
-            for j in result[:i]:
-                if j in [p.id for p in list(self.vert_list[result[i]].connected_to)]:
-                    is_linear = False
-
-        if is_linear:
-            return result
-        else:
-            raise ValueError('Graph is not linear!')
-
     def dfsvisit(self, start_vertex):
         start_vertex.set_color('gray')
         self.time += 1
@@ -310,6 +292,26 @@ class Graph:
         start_vertex.set_color('black')
         self.time += 1
         start_vertex.set_finish(self.time)
+
+    def sort_topological(self):
+        self.dfs()
+        is_linear = True
+        times = [(i, self.vert_list[i].get_finish()) for i in self.vert_list.keys()]
+        times.sort(reverse=True, key=lambda x: x[1])
+        result = []
+        for i in times:
+            result.append(i[0])
+
+        for i in range(1, len(result)):
+            for j in result[:i]:
+                if j in [p.id for p in list(self.vert_list[result[i]].connected_to)]:
+                    is_linear = False
+        for v in self:
+            v.set_pred(None)
+        if is_linear:
+            return result
+        else:
+            raise ValueError('Graph is not linear!')
 
     def __iter__(self):
         return iter(self.vert_list.values())
@@ -345,11 +347,10 @@ if __name__ == "__main__":
     g.add_edge(6, 7, 1)
     g.add_edge(7, 8, 1)
 
-    # print("Task 2")
-    # print(g.generate_digraph())
-    # print("Task 4")
-    # g.dfs()
-    # print(g.sort_topological())
+    print("Task 2")
+    print(g.generate_digraph())
+    print("Task 4")
+    print(g.sort_topological())
     print("Task 5")
     print(g.find_fastest(3))
     print(g.find_fastest(1))
