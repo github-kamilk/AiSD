@@ -1,5 +1,6 @@
 import sys
 
+
 class Queue:
     def __init__(self):
         self.items = []
@@ -15,6 +16,95 @@ class Queue:
 
     def size(self):
         return len(self.items)
+
+
+class BinHeap:
+    def __init__(self):
+        self.heap_list = [0]
+        self.atributes = [0]
+        self.current_size = 0
+
+    def perc_up(self, index):
+        while index // 2 > 0:
+            if self.heap_list[index] < self.heap_list[index // 2]:
+                tmp = self.heap_list[index // 2]
+                tmp2 = self.atributes[index // 2]
+                self.heap_list[index // 2] = self.heap_list[index]
+                self.atributes[index // 2] = self.atributes[index]
+                self.heap_list[index] = tmp
+                self.atributes[index] = tmp2
+            index = index // 2
+
+    def insert(self, k):
+        self.heap_list.append(k[0])
+        self.atributes.append(k[1])
+        self.current_size = self.current_size + 1
+        self.perc_up(self.current_size)
+
+    def find_min(self):
+        return (self.heap_list[1], self.atributes[1])
+
+    def perc_down(self, index):
+        while (index * 2) <= self.current_size:
+            mc = self.min_child(index)
+            if self.heap_list[index] > self.heap_list[mc]:
+                tmp = self.heap_list[index]
+                tmp2 = self.atributes[index]
+                self.heap_list[index] = self.heap_list[mc]
+                self.atributes[index] = self.atributes[mc]
+                self.heap_list[mc] = tmp
+                self.atributes[mc] = tmp2
+            index = mc
+
+    def min_child(self, index):
+        if index * 2 + 1 > self.current_size:
+            return index * 2
+        else:
+            if self.heap_list[index * 2] < self.heap_list[index * 2 + 1]:
+                return index * 2
+            else:
+                return index * 2 + 1
+
+    def del_min(self):
+        retval = self.heap_list[1]
+        retatr = self.atributes[1]
+        self.heap_list[1] = self.heap_list[self.current_size]
+        self.atributes[1] = self.atributes[self.current_size]
+        self.current_size = self.current_size - 1
+        self.heap_list.pop()
+        self.atributes.pop()
+        self.perc_down(1)
+        return (retval, retatr)
+
+    def build_heap(self, alist):
+        index = len(alist) // 2
+        self.current_size = len(alist)
+        self.heap_list = [0]
+        self.atributes = [0]
+        for i in alist:
+            self.heap_list.append(i[0])
+            self.atributes.append(i[1])
+        while index > 0:
+            self.perc_down(index)
+            index -= 1
+
+    def size(self):
+        return self.current_size
+
+    def is_empty(self):
+        return self.current_size == 0
+
+    def decrease_key(self, element, new_key):
+        idx = self.atributes.index(element)
+        self.heap_list[idx] = new_key
+        data = []
+        for i in range(1, len(self.heap_list)):
+            data.append((self.heap_list[i], self.atributes[i]))
+        self.build_heap(data)
+
+    def __str__(self):
+        return str([(self.heap_list[i], self.atributes[i]) for i in range(1, self.current_size)])
+
 
 class Vertex:
     def __init__(self, key):
@@ -90,7 +180,7 @@ class Graph:
         else:
             return None
 
-    def add_edge(self, f, t, cost=0):
+    def add_edge(self, f, t, cost=1):
         if f not in self.vert_list:
             self.add_vertex(f)
         if t not in self.vert_list:
@@ -104,7 +194,6 @@ class Graph:
                 edges.append((v.get_id(), w.get_id()))
         return edges
 
-
     def get_vertices(self):
         return self.vert_list.keys()
 
@@ -116,6 +205,19 @@ class Graph:
                 str += new_vertex
         str += '}'
         return str
+
+    def get_cost(self, vert1, vert2):
+        if self.vert_list[vert2] in self.vert_list[vert1].connected_to:
+            return self.vert_list[vert1].connected_to[self.vert_list[vert2]]
+        else:
+            raise ValueError('Vertices are not connected!')
+
+    def path_cost(self, vert_list):
+        cost = 0
+        if len(vert_list) > 1:
+            for i in range(1, len(vert_list)):
+                cost += self.get_cost(vert_list[i - 1], vert_list[i])
+        return cost
 
     def bfs(self, start):
         start.set_distance(0)  # distance 0 indicates it is a start node
@@ -131,6 +233,45 @@ class Graph:
                     nbr.set_pred(current_vert)  # current node is its predecessor
                     vert_queue.enqueue(nbr)  # add it to the queue
             current_vert.set_color('black')  # change current node to black after vi
+
+    def dijkstra(self, start):
+        pq = BinHeap()
+        start.set_distance(0)
+        pq.build_heap([(v.get_distance(), v) for v in self])
+        while not pq.is_empty():
+            current_vert = pq.del_min()[1]
+            for next_vert in current_vert.get_connections():
+                new_dist = current_vert.get_distance() + current_vert.get_weight(next_vert)
+                if new_dist < next_vert.get_distance():
+                    next_vert.set_distance(new_dist)
+                    next_vert.set_pred(current_vert)
+                    pq.decrease_key(next_vert, new_dist)
+
+    def traverse(self, vert):
+        result = []
+        x = vert
+        while x.get_pred():
+            result.append(x.get_id())
+            x = x.get_pred()
+        result.append(x.get_id())
+        return result
+
+    def find_fastest(self, start):
+        self.dijkstra(self.get_vertex(start))
+        routes = {k: None for k in self.vert_list.keys()}
+        for i in list(self.vert_list.keys()):
+            if i != start:
+                result = self.traverse(self.get_vertex(i))
+                result = tuple(result[::-1])
+                cost = self.path_cost(result)
+                if start in result:
+                    routes[i] = (result, cost)
+            else:
+                routes[i] = ((i,), 0)
+
+        for v in self:
+            v.set_distance(sys.maxsize)
+        return routes
 
     def dfs(self):
         for aVertex in self:
@@ -170,7 +311,6 @@ class Graph:
         self.time += 1
         start_vertex.set_finish(self.time)
 
-
     def __iter__(self):
         return iter(self.vert_list.values())
 
@@ -202,11 +342,14 @@ if __name__ == "__main__":
     g.add_edge(3, 6, 7)
     g.add_edge(4, 8, 7)
     g.add_edge(5, 6, 3)
-    g.add_edge(6, 7, 8)
-    g.add_edge(7, 8, 8)
+    g.add_edge(6, 7, 1)
+    g.add_edge(7, 8, 1)
 
-    print("Task 2")
-    print(g.generate_digraph())
-    print("Task 4")
-    g.dfs()
-    print(g.sort_topological())
+    # print("Task 2")
+    # print(g.generate_digraph())
+    # print("Task 4")
+    # g.dfs()
+    # print(g.sort_topological())
+    print("Task 5")
+    print(g.find_fastest(3))
+    print(g.find_fastest(1))
