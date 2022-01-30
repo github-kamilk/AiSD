@@ -1,6 +1,5 @@
 import sys
 
-
 class Queue:
     def __init__(self):
         self.items = []
@@ -16,7 +15,6 @@ class Queue:
 
     def size(self):
         return len(self.items)
-
 
 class BinHeap:
     def __init__(self):
@@ -105,7 +103,6 @@ class BinHeap:
     def __str__(self):
         return str([(self.heap_list[i], self.atributes[i]) for i in range(1, self.current_size)])
 
-
 class Vertex:
     def __init__(self, key):
         self.id = key
@@ -159,8 +156,7 @@ class Vertex:
         return self.connected_to[nbr]
 
     def __str__(self):
-        return str(self.id) + ' connectedTo: ' + str([x.id for x in self.connected_to])
-
+        return str(self.id) + ":color " + self.color + ":disc " + str(self.disc) + ":fin " + str(self.fin) + ":dist " + str(self.dist) + ":pred \n\t[" + str(self.pred)+ "]\n"
 
 class Graph:
     def __init__(self):
@@ -178,7 +174,10 @@ class Graph:
         if n in self.vert_list:
             return self.vert_list[n]
         else:
-            return None
+            return None       
+
+    def __contains__(self, n):
+        return n in self.vert_list
 
     def add_edge(self, f, t, cost=1):
         if f not in self.vert_list:
@@ -187,15 +186,20 @@ class Graph:
             self.add_vertex(t)
         self.vert_list[f].add_neighbor(self.vert_list[t], cost)
 
+    def get_vertices(self):
+        return self.vert_list.keys()
+
+    def __iter__(self):
+        return iter(self.vert_list.values())
+
+#Our changes
+
     def get_edges(self):
         edges = []
         for v in self:
             for w in v.get_connections():
                 edges.append((v.get_id(), w.get_id()))
         return edges
-
-    def get_vertices(self):
-        return self.vert_list.keys()
 
     def generate_digraph(self):
         str = 'digraph G { '
@@ -312,13 +316,6 @@ class Graph:
             return result
         else:
             raise ValueError('Graph is not linear!')
-
-    def __iter__(self):
-        return iter(self.vert_list.values())
-
-    def __contains__(self, n):
-        return n in self.vert_list
-
 
 if __name__ == "__main__":
     g = Graph()
