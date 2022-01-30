@@ -343,6 +343,7 @@ if __name__ == "__main__":
     g.add_edge(5, 6, 3)
     g.add_edge(6, 7, 1)
     g.add_edge(7, 8, 1)
+    g.add_edge(7, 8, 1)
 
     print("Task 2")
     print(g.generate_digraph())
