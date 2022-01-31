@@ -38,7 +38,7 @@ def move_legal(start, end):
             return False
 
 def create_graph(max_size):
-    moves_list = [(1, 0), (0, 1), (2, 0), (0, 2), (1, 1), (-1, 0), (0, -1), (-2, 0), (0, -2), (-1, -1)]
+    moves_list = [(1, 0), (0, 1), (2, 0), (0, 2), (1, 1)]
     g = Graph()
     for i in range(max_size + 1):
         for j in range(max_size + 1):
@@ -49,6 +49,8 @@ def create_graph(max_size):
 
     for vertex in possible_vertex:
         for moves in moves_list:
+            if vertex[2] == 0:
+                moves = (moves[0]*(-1), moves[1]*(-1))
             new_position = calculate_position(vertex, moves)
             if new_position in possible_vertex and move_legal(vertex, new_position):
                 g.add_edge(vertex, new_position)
@@ -61,6 +63,6 @@ def get_path(graph, start, finish):
 
 
 if __name__ == "__main__":
-    number_of_missionaries_cannibals = 3
+    number_of_missionaries_cannibals = 4
     graph = create_graph(number_of_missionaries_cannibals)
     print(get_path(graph, (number_of_missionaries_cannibals, number_of_missionaries_cannibals, 0), (0, 0, 1)))
