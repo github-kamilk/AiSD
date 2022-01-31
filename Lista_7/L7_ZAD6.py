@@ -63,8 +63,14 @@ def get_path(graph, start, finish):
     else:
         return fastest_ways[finish]
 
+def solve(missionaries, cannibals):
+    if cannibals > missionaries:
+        print("Missionaries were eaten.")
+    else:
+        graph = create_graph(missionaries)
+        print(get_path(graph, (missionaries, cannibals, 0), (0, 0, 1)))
 
 if __name__ == "__main__":
-    number_of_missionaries_cannibals = 3
-    graph = create_graph(number_of_missionaries_cannibals)
-    print(get_path(graph, (number_of_missionaries_cannibals, number_of_missionaries_cannibals, 0), (0, 0, 1)))
+    missionaries = 3
+    cannibals = 3
+    solve(missionaries, cannibals)
