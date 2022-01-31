@@ -59,10 +59,13 @@ def create_graph(max_size):
 
 def get_path(graph, start, finish):
     fastest_ways = graph.find_fastest(start)
-    return fastest_ways[finish]
+    if fastest_ways[finish] == None:
+        return "Can not solve."
+    else:
+        return fastest_ways[finish]
 
 
 if __name__ == "__main__":
-    number_of_missionaries_cannibals = 4
+    number_of_missionaries_cannibals = 3
     graph = create_graph(number_of_missionaries_cannibals)
     print(get_path(graph, (number_of_missionaries_cannibals, number_of_missionaries_cannibals, 0), (0, 0, 1)))
