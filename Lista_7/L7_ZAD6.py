@@ -4,7 +4,7 @@ from L7_ZAD1_5 import Queue, BinHeap, Vertex, Graph
 
 def game_over(location, max_size):
     if location[0] == 0:
-        if location[1] == 0 and location[2] == 1:
+        if (location[1] == 0 and location[2] == 1) or location[1] != 0:
             return False
         else:
             return True
@@ -19,12 +19,23 @@ def game_over(location, max_size):
 
 def calculate_position(location, move):
     if location[2] == 0:
-        return (location[0] + move[0], location[1] + move[1], 1)
+        return location[0] + move[0], location[1] + move[1], 1
     elif location[2] == 1:
-        return (location[0] + move[0], location[1] + move[1], 0)
+        return location[0] + move[0], location[1] + move[1], 0
     else:
         raise ValueError
 
+def move_legal(start, end):
+    if start[2] == 0:
+        if start[0] >= end[0] and start[1] >= end[1]:
+            return True
+        else:
+            return False
+    else:
+        if start[0] <= end[0] and start[1] <= end[1]:
+            return True
+        else:
+            return False
 
 def create_graph(max_size):
     moves_list = [(1, 0), (0, 1), (2, 0), (0, 2), (1, 1), (-1, 0), (0, -1), (-2, 0), (0, -2), (-1, -1)]
@@ -39,7 +50,7 @@ def create_graph(max_size):
     for vertex in possible_vertex:
         for moves in moves_list:
             new_position = calculate_position(vertex, moves)
-            if new_position in possible_vertex:
+            if new_position in possible_vertex and move_legal(vertex, new_position):
                 g.add_edge(vertex, new_position)
     return g
 
@@ -53,4 +64,3 @@ if __name__ == "__main__":
     number_of_missionaries_cannibals = 3
     graph = create_graph(number_of_missionaries_cannibals)
     print(get_path(graph, (number_of_missionaries_cannibals, number_of_missionaries_cannibals, 0), (0, 0, 1)))
-
