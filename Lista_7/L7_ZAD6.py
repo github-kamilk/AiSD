@@ -1,5 +1,4 @@
-import sys
-from L7_ZAD1_5 import Queue, BinHeap, Vertex, Graph
+from L7_ZAD1_5 import Graph
 
 
 def game_over(location, max_size):
