@@ -275,6 +275,7 @@ class Graph:
 
         for v in self:
             v.set_distance(sys.maxsize)
+            v.set_pred(None)
         return routes
 
     def dfs(self):
@@ -319,36 +320,36 @@ class Graph:
 
 if __name__ == "__main__":
     g = Graph()
-    # for i in range(6):
-    #     g.add_vertex(i)
-    #
-    # g.add_edge(0, 1, 5)
-    # g.add_edge(0, 5, 2)
-    # g.add_edge(1, 2, 4)
-    # g.add_edge(2, 3, 9)
-    # g.add_edge(3, 4, 7)
-    # g.add_edge(3, 5, 3)
-    # g.add_edge(4, 0, 1)
-    # g.add_edge(5, 4, 8)
-    # g.add_edge(5, 2, 1)
-
-    for i in range(9):
+    for i in range(6):
         g.add_vertex(i)
-    g.add_edge(0, 3, 5)
-    g.add_edge(1, 3, 2)
-    g.add_edge(2, 3, 4)
-    g.add_edge(3, 4, 9)
-    g.add_edge(3, 6, 7)
-    g.add_edge(4, 8, 7)
-    g.add_edge(5, 6, 3)
-    g.add_edge(6, 7, 1)
-    g.add_edge(7, 8, 1)
-    g.add_edge(7, 8, 1)
+
+    g.add_edge(0, 1, 5)
+    g.add_edge(0, 5, 2)
+    g.add_edge(1, 2, 4)
+    g.add_edge(2, 3, 9)
+    g.add_edge(3, 4, 7)
+    g.add_edge(3, 5, 3)
+    g.add_edge(4, 0, 1)
+    g.add_edge(5, 4, 8)
+    g.add_edge(5, 2, 1)
+
+    # for i in range(9):
+    #     g.add_vertex(i)
+    # g.add_edge(0, 3, 5)
+    # g.add_edge(1, 3, 2)
+    # g.add_edge(2, 3, 4)
+    # g.add_edge(3, 4, 9)
+    # g.add_edge(3, 6, 7)
+    # g.add_edge(4, 8, 7)
+    # g.add_edge(5, 6, 3)
+    # g.add_edge(6, 7, 1)
+    # g.add_edge(7, 8, 1)
+    # g.add_edge(7, 8, 1)
 
     print("Task 2")
     print(g.generate_digraph())
     print("Task 4")
-    print(g.sort_topological())
+    # print(g.sort_topological())
     print("Task 5")
     print(g.find_fastest(3))
     print(g.find_fastest(1))

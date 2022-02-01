@@ -54,22 +54,31 @@ def get_path(graph, start, finish):
 def solve(x, y, goal):
     bucket1 = min(x, y)
     bucket2 = max(x, y)
+
+    if bucket2 < goal:
+        return print("Can not solve.")
+
     graph = build_graph(bucket1, bucket2)
     paths = []
     for i in range(bucket2 + 1):
         paths.append(get_path(graph, (0, 0), (i, goal)))
         paths.append(get_path(graph, (0, 0), (goal, i)))
     paths = [i for i in paths if i is not None]
+
+    if not paths:
+        return print("Can not solve.")
+
     minimum = paths[0][1]
     for i in range(len(paths)):
         if paths[i][1] < minimum:
             minimum = paths[i][1]
             minimum_pos = i
     print(paths[minimum_pos])
+    print(graph.generate_digraph())
 
 
 if __name__ == "__main__":
     bucket1 = 3
-    bucket2 = 4
-    goal = 2
+    bucket2 = 3
+    goal = 1
     solve(bucket1, bucket2, goal)

@@ -45,7 +45,7 @@ def create_graph(missionaries, cannibals):
     for i in range(max_size + 1):
         for j in range(max_size + 1):
             for k in range(2):
-                if not game_over((i, j, k), missionaries, cannibals):
+                if not game_over((i, j, k), missionaries, cannibals) and i <= missionaries and j <= cannibals:
                     g.add_vertex((i, j, k))
     possible_vertex = list(g.vert_list.keys())[:-1]
 
@@ -73,9 +73,10 @@ def solve(missionaries, cannibals):
     else:
         graph = create_graph(missionaries, cannibals)
         print(get_path(graph, (missionaries, cannibals, 0), (0, 0, 1)))
+        print(graph.generate_digraph())
 
 
 if __name__ == "__main__":
-    missionaries = 3
+    missionaries = 4
     cannibals = 3
     solve(missionaries, cannibals)
